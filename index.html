@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Ruby — 우리 아기 수첩</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Gowun+Dodum&display=swap');
+
+:root {
+  --bg: #FAF9F7;
+  --surface: #FFFFFF;
+  --border: rgba(0,0,0,0.08);
+  --text: #1A1A1A;
+  --text-muted: #7A7A7A;
+  --text-light: #ADADAD;
+  --green: #3D9970;
+  --green-light: #EBF7F1;
+  --amber: #C07D2A;
+  --amber-light: #FEF3E2;
+  --red: #C0392B;
+  --red-light: #FDECEA;
+  --blue: #2563A8;
+  --blue-light: #EAF1FB;
+  --pink: #C2185B;
+  --pink-light: #FCE4EC;
+  --ruby: #9B2335;
+  --ruby-mid: #C4374E;
+  --ruby-light: #F9E8EB;
+  --ruby-pale: #FDF4F5;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  overflow-x: hidden;
+}
+
+/* ===== SCREENS ===== */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: block; }
+
+/* ===== MAIN SCREEN ===== */
+#screen-main {
+  background: var(--ruby-pale);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.main-deco-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(155,35,53,0.08);
+}
+.ring1 { width: 340px; height: 340px; top: -80px; right: -80px; }
+.ring2 { width: 240px; height: 240px; bottom: 60px; left: -60px; }
+.ring3 { width: 120px; height: 120px; top: 120px; left: 30px; }
+
+.main-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  z-index: 1;
+  width: 100%;
+}
+
+.ruby-gem {
+  width: 90px; height: 90px;
+  background: var(--ruby-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 28px;
+  position: relative;
+}
+.ruby-gem-inner {
+  width: 62px; height: 62px;
+  background: linear-gradient(145deg, #C4374E, #9B2335);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+}
+.ruby-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(155,35,53,0.2);
+  animation: ripple 2.4s ease-out infinite;
+}
+.ruby-pulse2 {
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  border: 1px solid rgba(155,35,53,0.1);
+  animation: ripple 2.4s ease-out infinite 0.8s;
+}
+@keyframes ripple {
+  0% { transform: scale(0.9); opacity: 1; }
+  100% { transform: scale(1.15); opacity: 0; }
+}
+
+.main-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 58px;
+  font-weight: 700;
+  color: var(--ruby);
+  letter-spacing: -1px;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.main-tagline {
+  font-family: 'Gowun Dodum', sans-serif;
+  font-size: 15px;
+  color: #B06070;
+  letter-spacing: 0.02em;
+  margin-bottom: 32px;
+}
+
+.main-stats {
+  display: flex;
+  gap: 0;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid rgba(155,35,53,0.1);
+  overflow: hidden;
+  width: 100%;
+  margin-bottom: 36px;
+}
+.main-stat {
+  flex: 1;
+  padding: 16px 8px;
+  text-align: center;
+  border-right: 1px solid rgba(155,35,53,0.08);
+}
+.main-stat:last-child { border-right: none; }
+.stat-num {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ruby);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-label {
+  font-size: 11px;
+  color: #B06070;
+}
+
+.main-progress-wrap {
+  width: 100%;
+  margin-bottom: 40px;
+}
+.main-progress-label {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: #B06070; margin-bottom: 8px;
+}
+.main-progress-bar {
+  height: 8px;
+  background: rgba(155,35,53,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.main-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #C4374E, #9B2335);
+  border-radius: 4px;
+  width: 22.5%;
+  transition: width 1s ease;
+}
+
+.enter-btn {
+  width: 100%;
+  padding: 18px;
+  background: var(--ruby);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: -0.2px;
+}
+.enter-btn:active { transform: scale(0.98); background: #7D1C2A; }
+.enter-arrow {
+  font-size: 18px;
+  transition: transform 0.2s;
+}
+.enter-btn:hover .enter-arrow { transform: translateX(4px); }
+
+.main-bottom {
+  margin-top: 28px;
+  font-size: 12px;
+  color: rgba(155,35,53,0.4);
+  text-align: center;
+}
+
+/* ===== NOTEBOOK SCREEN ===== */
+#screen-notebook { background: var(--bg); }
+
+.nb-topbar {
+  background: white;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 20;
+}
+.back-btn {
+  width: 32px; height: 32px;
+  background: var(--ruby-light);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--ruby);
+  flex-shrink: 0;
+  user-select: none;
+}
+.nb-topbar-title {
+  font-family: 'Gowun Dodum', sans-serif;
+  font-size: 17px;
+  color: var(--text);
+  flex: 1;
+}
+.nb-topbar-badge {
+  font-size: 11px;
+  background: var(--ruby-light);
+  color: var(--ruby);
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.nb-header {
+  background: white;
+  padding: 16px 20px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.nb-header-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.progress-label {
+  display: flex; justify-content: space-between;
+  font-size: 12px; color: var(--text-muted); margin-bottom: 6px;
+}
+.progress-bar { height: 6px; background: #EBEBEB; border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--green); border-radius: 3px; width: 22.5%; }
+
+.sync-bar {
+  background: white;
+  padding: 7px 20px;
+  font-size: 12px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 6px;
+}
+.sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+.sync-dot.loading { background: var(--amber); animation: pulse 1s infinite; }
+.sync-dot.error { background: var(--red); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.tabs {
+  background: white;
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 61px; z-index: 10;
+}
+.tab {
+  flex: 1; padding: 12px 4px; font-size: 13px; font-weight: 500;
+  color: var(--text-muted); cursor: pointer; text-align: center;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  user-select: none;
+}
+.tab.active { color: var(--green); border-bottom-color: var(--green); }
+
+.content { padding: 16px; display: none; }
+.content.active { display: block; }
+
+/* Period cards */
+.period-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: var(--radius); margin-bottom: 10px; overflow: hidden;
+}
+.period-card.now { border-color: var(--green); border-width: 1.5px; }
+.period-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px; cursor: pointer; user-select: none;
+}
+.period-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.dot-done { background: #A8D5B5; }
+.dot-now { background: var(--green); }
+.dot-soon { background: #D3D1C7; }
+.dot-later { background: #E8E8E8; }
+.period-meta { flex: 1; }
+.period-week { font-size: 14px; font-weight: 500; color: var(--text); }
+.period-desc { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+.badge { font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+.b-now { background: var(--red-light); color: var(--red); }
+.b-done { background: var(--green-light); color: var(--green); }
+.b-info { background: var(--blue-light); color: var(--blue); }
+.b-money { background: var(--amber-light); color: var(--amber); }
+.b-key { background: var(--green-light); color: var(--green); }
+.chevron { font-size: 16px; color: var(--text-light); transition: transform 0.2s; flex-shrink: 0; }
+.period-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--border); }
+.period-body.open { display: block; }
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.07em;
+  color: var(--text-light); text-transform: uppercase; margin: 14px 0 8px;
+}
+.check-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+  cursor: pointer; user-select: none;
+}
+.check-item:last-child { border-bottom: none; }
+.chk {
+  width: 18px; height: 18px; border-radius: 5px;
+  border: 1.5px solid #CCCCCC; flex-shrink: 0; margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s, border-color 0.15s; background: white;
+}
+.chk.checked { background: var(--green); border-color: var(--green); }
+.chk.checked::after { content: '✓'; font-size: 11px; color: white; font-weight: 700; }
+.chk-text { flex: 1; }
+.chk-main { font-size: 13px; color: var(--text); line-height: 1.5; }
+.chk-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.5; }
+.chk-main.done { text-decoration: line-through; color: var(--text-light); }
+.chk-sub.done { text-decoration: line-through; }
+.exam-item {
+  display: flex; gap: 8px; align-items: flex-start;
+  padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+}
+.exam-item:last-child { border-bottom: none; }
+.exam-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); margin-top: 6px; flex-shrink: 0; }
+.exam-inner { flex: 1; }
+.exam-name { color: var(--text); line-height: 1.5; }
+.exam-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; line-height: 1.5; }
+.alert-box {
+  background: var(--green-light); border-radius: var(--radius-sm);
+  padding: 10px 13px; margin-top: 12px;
+  font-size: 13px; color: #2A7A55; line-height: 1.6;
+}
+.alert-box.warn { background: var(--red-light); color: var(--red); }
+
+/* Benefits */
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+.sum-card { background: white; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; }
+.sum-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+.sum-value { font-size: 18px; font-weight: 700; color: var(--text); }
+.sum-value.blue { color: var(--blue); }
+.money-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 9px 0; border-bottom: 1px solid var(--border); gap: 8px; }
+.money-row:last-child { border-bottom: none; }
+.money-name { font-size: 13px; color: var(--text); flex: 1; line-height: 1.5; }
+.money-amt { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; }
+.money-note { font-size: 11px; color: var(--text-muted); margin-top: 3px; line-height: 1.5; }
+
+/* Todo */
+.todo-group { background: white; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; padding: 14px 16px; }
+.todo-group-title { font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.todo-item { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; }
+.todo-item:last-child { border-bottom: none; }
+.todo-text { font-size: 13px; color: var(--text); line-height: 1.5; flex: 1; }
+.todo-text.done { text-decoration: line-through; color: var(--text-light); }
+
+/* Loading */
+#loading {
+  position: fixed; inset: 0;
+  background: var(--ruby-pale);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px; z-index: 100;
+  transition: opacity 0.4s;
+}
+#loading.hidden { opacity: 0; pointer-events: none; }
+.loading-gem { font-size: 36px; animation: beat 1.2s ease-in-out infinite; }
+@keyframes beat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+.loading-text { font-size: 14px; color: #B06070; font-family: 'Gowun Dodum', sans-serif; }
+
+/* Page transition */
+.screen { animation: none; }
+.screen.slide-in { animation: slideIn 0.32s cubic-bezier(0.4,0,0.2,1); }
+.screen.slide-back { animation: slideBack 0.28s cubic-bezier(0.4,0,0.2,1); }
+@keyframes slideIn {
+  from { transform: translateX(32px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideBack {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="loading-gem">💎</div>
+  <div class="loading-text">Ruby 수첩 불러오는 중...</div>
+</div>
+
+<!-- ===== MAIN SCREEN ===== -->
+<div class="screen active" id="screen-main">
+  <div class="main-deco-ring ring1"></div>
+  <div class="main-deco-ring ring2"></div>
+  <div class="main-deco-ring ring3"></div>
+
+  <div class="main-center">
+    <div class="ruby-gem">
+      <div class="ruby-pulse"></div>
+      <div class="ruby-pulse2"></div>
+      <div class="ruby-gem-inner">💎</div>
+    </div>
+
+    <div class="main-name">Ruby</div>
+    <div class="main-tagline">우리 아기를 기다리며</div>
+
+    <div class="main-stats">
+      <div class="main-stat">
+        <div class="stat-num">9</div>
+        <div class="stat-label">현재 주차</div>
+      </div>
+      <div class="main-stat">
+        <div class="stat-num" id="dday-count">–</div>
+        <div class="stat-label">출산까지 D-</div>
+      </div>
+      <div class="main-stat">
+        <div class="stat-num">11.23</div>
+        <div class="stat-label">출산 예정일</div>
+      </div>
+    </div>
+
+    <div class="main-progress-wrap">
+      <div class="main-progress-label">
+        <span>임신 진행률</span>
+        <span>9 / 40주 · 약 22%</span>
+      </div>
+      <div class="main-progress-bar">
+        <div class="main-progress-fill"></div>
+      </div>
+    </div>
+
+    <button class="enter-btn" onclick="goNotebook()">
+      아기 수첩 열기
+      <span class="enter-arrow">→</span>
+    </button>
+
+    <div class="main-bottom">송파구 · 2025년 11월 23일 출산 예정</div>
+  </div>
+</div>
+
+<!-- ===== NOTEBOOK SCREEN ===== -->
+<div class="screen" id="screen-notebook">
+
+  <div class="nb-topbar">
+    <div class="back-btn" onclick="goMain()">←</div>
+    <div class="nb-topbar-title">우리 아기 수첩</div>
+    <div class="nb-topbar-badge">9주차</div>
+  </div>
+
+  <div class="nb-header">
+    <div class="nb-header-sub">출산 예정일 2025년 11월 23일 · 송파구 · 초기 (1분기)</div>
+    <div class="progress-label">
+      <span>임신 진행률</span><span>9 / 40주 (약 22%)</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+
+  <div class="sync-bar">
+    <div class="sync-dot" id="syncDot"></div>
+    <span id="syncText">연결 중...</span>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('timeline',this)">시기별 일정</div>
+    <div class="tab" onclick="switchTab('benefits',this)">혜택·지원금</div>
+    <div class="tab" onclick="switchTab('todo',this)">할 일 체크</div>
+  </div>
+
+  <!-- 시기별 일정 -->
+  <div class="content active" id="tab-timeline">
+
+    <div class="period-card">
+      <div class="period-header" onclick="toggle('p1')">
+        <div class="period-dot dot-done"></div>
+        <div class="period-meta"><div class="period-week">~8주 · 완료</div><div class="period-desc">임신 확인 및 초기 혈액검사</div></div>
+        <span class="badge b-done">완료</span>
+        <div class="chevron" id="chev-p1">›</div>
+      </div>
+      <div class="period-body" id="body-p1">
+        <div class="section-label">완료한 검사</div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">임신 확인 초음파</div><div class="exam-sub">태아 심박 확인, 임신 주수 산정</div></div></div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">기본 혈액검사</div><div class="exam-sub">혈액형, 빈혈, B형간염, 매독, HIV, 풍진항체</div></div></div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">소변검사</div><div class="exam-sub">요로감염, 단백뇨 확인</div></div></div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">임신확인서 발급</div><div class="exam-sub">국민행복카드 신청에 사용</div></div></div>
+      </div>
+    </div>
+
+    <div class="period-card now">
+      <div class="period-header" onclick="toggle('p2')">
+        <div class="period-dot dot-now"></div>
+        <div class="period-meta"><div class="period-week">9~13주 · 지금 여기 ✦</div><div class="period-desc">NT 초음파 + 1차 기형아검사</div></div>
+        <span class="badge b-now">이번 주 예약</span>
+        <div class="chevron" id="chev-p2">›</div>
+      </div>
+      <div class="period-body open" id="body-p2">
+        <div class="alert-box warn">NT 초음파는 11주~13주 6일 사이에만 가능합니다. 현재 9주이므로 지금 바로 예약하세요.</div>
+        <div class="section-label">필수 검사</div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">NT 초음파 (목덜미투명대)</div><div class="exam-sub">11~13주 6일 필수 · 다운증후군 등 염색체 이상 선별</div></div></div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">1차 기형아검사</div><div class="exam-sub">NIPT 또는 1차 통합선별검사 · 10~13주 시행</div></div></div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">자궁경부암 검사</div><div class="exam-sub">초진 시 함께 시행</div></div></div>
+        <div class="section-label">이 시기에 할 것</div>
+        <div class="check-item" onclick="toggleCheck(this,'tl_p2_1')"><div class="chk" id="chk-tl_p2_1"></div><div class="chk-text"><div class="chk-main" id="main-tl_p2_1">엽산제 복용 계속</div><div class="chk-sub" id="sub-tl_p2_1">12주까지 복용 권장 · 보건소에서 무료 수령</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this,'tl_p2_2')"><div class="chk" id="chk-tl_p2_2"></div><div class="chk-text"><div class="chk-main" id="main-tl_p2_2">보건소 임산부 등록</div><div class="chk-sub" id="sub-tl_p2_2">송파구 보건소 방문 · 엽산제·위생용품 4종 수령</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this,'tl_p2_3')"><div class="chk" id="chk-tl_p2_3"></div><div class="chk-text"><div class="chk-main" id="main-tl_p2_3">국민행복카드 바우처 100만원 신청</div><div class="chk-sub" id="sub-tl_p2_3">카드 수령 즉시 · 복지로 또는 1577-1000</div></div></div>
+      </div>
+    </div>
+
+    <div class="period-card">
+      <div class="period-header" onclick="toggle('p3')">
+        <div class="period-dot dot-soon"></div>
+        <div class="period-meta"><div class="period-week">14~20주 · 임신 중기 시작</div><div class="period-desc">2차 기형아검사 · 철분제 시작</div></div>
+        <span class="badge b-info">4주 후</span>
+        <div class="chevron" id="chev-p3">›</div>
+      </div>
+      <div class="period-body" id="body-p3">
+        <div class="section-label">필수 검사</div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">2차 기형아검사 (쿼드검사)</div><div class="exam-sub">15~20주 시행 · 신경관 결손, 다운증후군 등 추가 선별</div></div></div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">양수검사 (선택)</div><div class="exam-sub">16~20주 · 확진 필요 시 담당의와 상의</div></div></div>
+        <div class="section-label">이 시기에 할 것</div>
+        <div class="check-item" onclick="toggleCheck(this,'tl_p3_1')"><div class="chk" id="chk-tl_p3_1"></div><div class="chk-text"><div class="chk-main" id="main-tl_p3_1">철분제 복용 시작</div><div class="chk-sub" id="sub-tl_p3_1">16주부터 권장 · 보건소 무료 수령 (약 5개월분)</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this,'tl_p3_2')"><div class="chk" id="chk-tl_p3_2"></div><div class="chk-text"><div class="chk-main" id="main-tl_p3_2">영양 보충 시작</div><div class="chk-sub" id="sub-tl_p3_2">보통 12~14주 이후 입덧 완화 · 단백질·칼슘 위주 식단</div></div></div>
+      </div>
+    </div>
+
+    <div class="period-card">
+      <div class="period-header" onclick="toggle('p4')">
+        <div class="period-dot dot-soon"></div>
+        <div class="period-meta"><div class="period-week">20~24주 · 정밀 초음파</div><div class="period-desc">태아 기형 정밀 확인</div></div>
+        <span class="badge b-key">중요 검사</span>
+        <div class="chevron" id="chev-p4">›</div>
+      </div>
+      <div class="period-body" id="body-p4">
+        <div class="section-label">필수 검사</div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">정밀 초음파</div><div class="exam-sub">태아 기관 형성 전반 확인 · 대형 산부인과 또는 모체태아의학과 권장</div></div></div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">자궁경부 길이 측정</div><div class="exam-sub">조기 진통 위험 확인</div></div></div>
+        <div class="section-label">이 시기에 할 것</div>
+        <div class="check-item" onclick="toggleCheck(this,'tl_p4_1')"><div class="chk" id="chk-tl_p4_1"></div><div class="chk-text"><div class="chk-main" id="main-tl_p4_1">분만 병원 알아보기 시작</div><div class="chk-sub" id="sub-tl_p4_1">대형병원은 빠를수록 좋음 · 송파 인근 탐색</div></div></div>
+      </div>
+    </div>
+
+    <div class="period-card">
+      <div class="period-header" onclick="toggle('p5')">
+        <div class="period-dot dot-soon"></div>
+        <div class="period-meta"><div class="period-week">24~28주 · 임신성 당뇨 검사</div><div class="period-desc">50g 당부하검사 필수</div></div>
+        <span class="badge b-info">중기</span>
+        <div class="chevron" id="chev-p5">›</div>
+      </div>
+      <div class="period-body" id="body-p5">
+        <div class="section-label">필수 검사</div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">임신성 당뇨 검사 (50g)</div><div class="exam-sub">24~28주 · 비공복으로 시행 · 양성 시 100g 확진 검사</div></div></div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">빈혈 재검사</div><div class="exam-sub">철분제 복용 효과 확인</div></div></div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">태아 성장 초음파</div><div class="exam-sub">태아 크기·양수량·태반 위치 확인</div></div></div>
+      </div>
+    </div>
+
+    <div class="period-card">
+      <div class="period-header" onclick="toggle('p6')">
+        <div class="period-dot dot-soon"></div>
+        <div class="period-meta"><div class="period-week">28~36주 · 분만 병원 확정</div><div class="period-desc">2주마다 진찰 · 태동 집중 관찰</div></div>
+        <span class="badge b-money">분만 준비</span>
+        <div class="chevron" id="chev-p6">›</div>
+      </div>
+      <div class="period-body" id="body-p6">
+        <div class="section-label">필수 검사</div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">태아 성장 초음파</div><div class="exam-sub">태아 위치 (역아 여부) 확인</div></div></div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">Rh 음성 해당자 면역글로불린 주사</div><div class="exam-sub">28주 · 혈액형 Rh음성이었다면 필수</div></div></div>
+        <div class="section-label">이 시기에 할 것</div>
+        <div class="check-item" onclick="toggleCheck(this,'tl_p6_1')"><div class="chk" id="chk-tl_p6_1"></div><div class="chk-text"><div class="chk-main" id="main-tl_p6_1">분만 병원 등록 확정</div><div class="chk-sub" id="sub-tl_p6_1">32주 전후로 확정 권장</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this,'tl_p6_2')"><div class="chk" id="chk-tl_p6_2"></div><div class="chk-text"><div class="chk-main" id="main-tl_p6_2">산후도우미·산후조리원 예약</div><div class="chk-sub" id="sub-tl_p6_2">인기 곳은 조기 마감 · 송파구 산모건강증진센터 확인</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this,'tl_p6_3')"><div class="chk" id="chk-tl_p6_3"></div><div class="chk-text"><div class="chk-main" id="main-tl_p6_3">태동 카운팅 시작</div><div class="chk-sub" id="sub-tl_p6_3">28주 이후 하루 10회 이상 태동 확인</div></div></div>
+      </div>
+    </div>
+
+    <div class="period-card">
+      <div class="period-header" onclick="toggle('p7')">
+        <div class="period-dot dot-later"></div>
+        <div class="period-meta"><div class="period-week">36~40주 · 분만 임박</div><div class="period-desc">매주 진찰 · GBS 검사</div></div>
+        <span class="badge b-now">출산 준비</span>
+        <div class="chevron" id="chev-p7">›</div>
+      </div>
+      <div class="period-body" id="body-p7">
+        <div class="section-label">필수 검사</div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">GBS 검사 (B군연쇄상구균)</div><div class="exam-sub">35~37주 · 양성 시 분만 중 항생제 투여</div></div></div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">비수축 검사 (NST)</div><div class="exam-sub">매주 · 태아 심박수 모니터링</div></div></div>
+        <div class="section-label">분만 징후 — 즉시 병원으로</div>
+        <div class="exam-item"><div class="exam-dot"></div><div class="exam-inner"><div class="exam-name">이슬 · 규칙적 진통 (5분 간격) · 양막 파수</div><div class="exam-sub">셋 중 하나라도 발생하면 즉시 병원으로</div></div></div>
+        <div class="section-label">이 시기에 할 것</div>
+        <div class="check-item" onclick="toggleCheck(this,'tl_p7_1')"><div class="chk" id="chk-tl_p7_1"></div><div class="chk-text"><div class="chk-main" id="main-tl_p7_1">출산 가방 준비</div><div class="chk-sub" id="sub-tl_p7_1">산모 서류·속옷·세면도구, 아기 내의·기저귀</div></div></div>
+        <div class="check-item" onclick="toggleCheck(this,'tl_p7_2')"><div class="chk" id="chk-tl_p7_2"></div><div class="chk-text"><div class="chk-main" id="main-tl_p7_2">출산 후 신청 목록 미리 확인</div><div class="chk-sub" id="sub-tl_p7_2">첫만남이용권·부모급여·산후조리경비</div></div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 혜택·지원금 -->
+  <div class="content" id="tab-benefits">
+    <div class="summary-grid">
+      <div class="sum-card"><div class="sum-label">임신 중 즉시</div><div class="sum-value">100만원</div></div>
+      <div class="sum-card"><div class="sum-label">출산 직후</div><div class="sum-value">300만원</div></div>
+      <div class="sum-card"><div class="sum-label">부모급여 (2년)</div><div class="sum-value">1,800만원</div></div>
+      <div class="sum-card"><div class="sum-label">합계 (현금성)</div><div class="sum-value blue">2,200만+</div></div>
+    </div>
+    <div class="period-card now">
+      <div class="period-header" onclick="toggle('b1')">
+        <div class="period-dot dot-now"></div>
+        <div class="period-meta"><div class="period-week">지금 신청 가능</div><div class="period-desc">임신 바우처 · 보건소 혜택</div></div>
+        <span class="badge b-now">즉시</span>
+        <div class="chevron" id="chev-b1">›</div>
+      </div>
+      <div class="period-body" id="body-b1">
+        <div class="money-row"><div><div class="money-name">임신 바우처 (국민행복카드)</div><div class="money-note">카드 수령 후 별도 신청 필수 · 출산 후 2년까지 사용</div></div><div class="money-amt">100만원</div></div>
+        <div class="money-row"><div><div class="money-name">엽산제 (보건소)</div><div class="money-note">12주까지 · 송파구 보건소 방문 수령</div></div><div class="money-amt">무료</div></div>
+        <div class="money-row"><div><div class="money-name">위생용품 4종 (서울시)</div><div class="money-note">보건소 등록 임산부 전원</div></div><div class="money-amt">무료</div></div>
+        <div class="money-row"><div><div class="money-name">철분제 (보건소)</div><div class="money-note">16주부터 · 보건소 무료 지급</div></div><div class="money-amt">무료</div></div>
+      </div>
+    </div>
+    <div class="period-card">
+      <div class="period-header" onclick="toggle('b2')">
+        <div class="period-dot dot-soon"></div>
+        <div class="period-meta"><div class="period-week">출산 직후 신청</div><div class="period-desc">첫만남이용권 · 산후조리경비</div></div>
+        <span class="badge b-money">300만원</span>
+        <div class="chevron" id="chev-b2">›</div>
+      </div>
+      <div class="period-body" id="body-b2">
+        <div class="money-row"><div><div class="money-name">첫만남이용권</div><div class="money-note">출생 후 2년 내 사용 · 복지로 또는 주민센터</div></div><div class="money-amt">200만원</div></div>
+        <div class="money-row"><div><div class="money-name">서울시 산후조리경비</div><div class="money-note">서울맘케어(seoulmomcare.com) · 출산 후 1년까지</div></div><div class="money-amt">100만원</div></div>
+      </div>
+    </div>
+    <div class="period-card">
+      <div class="period-header" onclick="toggle('b3')">
+        <div class="period-dot dot-soon"></div>
+        <div class="period-meta"><div class="period-week">출산 후 매월</div><div class="period-desc">부모급여 · 아동수당</div></div>
+        <span class="badge b-info">월 지급</span>
+        <div class="chevron" id="chev-b3">›</div>
+      </div>
+      <div class="period-body" id="body-b3">
+        <div class="money-row"><div><div class="money-name">부모급여 (0세, 0~11개월)</div></div><div class="money-amt">월 100만원</div></div>
+        <div class="money-row"><div><div class="money-name">부모급여 (1세, 12~23개월)</div></div><div class="money-amt">월 50만원</div></div>
+        <div class="money-row"><div><div class="money-name">아동수당 (0~95개월)</div></div><div class="money-amt">월 10만원</div></div>
+      </div>
+    </div>
+    <div class="period-card">
+      <div class="period-header" onclick="toggle('b4')">
+        <div class="period-dot dot-soon"></div>
+        <div class="period-meta"><div class="period-week">남편 직장인 혜택</div><div class="period-desc">출산휴가 · 육아휴직</div></div>
+        <span class="badge b-info">직장인</span>
+        <div class="chevron" id="chev-b4">›</div>
+      </div>
+      <div class="period-body" id="body-b4">
+        <div class="money-row"><div><div class="money-name">배우자 출산휴가</div><div class="money-note">출산일로부터 90일 이내 · 회사 HR 신청</div></div><div class="money-amt">10일 유급</div></div>
+        <div class="money-row"><div><div class="money-name">육아휴직 1~3개월</div></div><div class="money-amt">100% (상한 250만)</div></div>
+        <div class="money-row"><div><div class="money-name">육아휴직 4~6개월</div></div><div class="money-amt">100% (상한 200만)</div></div>
+        <div class="money-row"><div><div class="money-name">육아휴직 7~12개월</div></div><div class="money-amt">80% (상한 160만)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 할 일 체크 -->
+  <div class="content" id="tab-todo">
+    <div class="todo-group">
+      <div class="todo-group-title">🔴 즉시 해야 할 것</div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_1')"><div class="chk" id="chk-td_1"></div><div class="todo-text" id="main-td_1">국민행복카드 바우처 100만원 신청 (복지로 or 1577-1000)</div></div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_2')"><div class="chk" id="chk-td_2"></div><div class="todo-text" id="main-td_2">NT 초음파 예약 — 11~13주 6일 마감, 지금 바로 전화</div></div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_3')"><div class="chk" id="chk-td_3"></div><div class="todo-text" id="main-td_3">송파구 보건소 임산부 등록 (엽산제·위생용품 수령)</div></div>
+    </div>
+    <div class="todo-group">
+      <div class="todo-group-title">🟡 임신 중기 전 (14주 전)</div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_4')"><div class="chk" id="chk-td_4"></div><div class="todo-text" id="main-td_4">1차 기형아검사 (NIPT 또는 통합선별검사)</div></div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_5')"><div class="chk" id="chk-td_5"></div><div class="todo-text" id="main-td_5">보건소 철분제 수령 (16주부터)</div></div>
+    </div>
+    <div class="todo-group">
+      <div class="todo-group-title">🟢 임신 중기 (14~28주)</div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_6')"><div class="chk" id="chk-td_6"></div><div class="todo-text" id="main-td_6">2차 기형아검사 (쿼드검사, 15~20주)</div></div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_7')"><div class="chk" id="chk-td_7"></div><div class="todo-text" id="main-td_7">정밀 초음파 (20~24주)</div></div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_8')"><div class="chk" id="chk-td_8"></div><div class="todo-text" id="main-td_8">임신성 당뇨 검사 (24~28주)</div></div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_9')"><div class="chk" id="chk-td_9"></div><div class="todo-text" id="main-td_9">분만 병원 탐색 및 예약 시작</div></div>
+    </div>
+    <div class="todo-group">
+      <div class="todo-group-title">🔵 임신 후기 (28~36주)</div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_10')"><div class="chk" id="chk-td_10"></div><div class="todo-text" id="main-td_10">산후조리원 / 산후도우미 예약</div></div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_11')"><div class="chk" id="chk-td_11"></div><div class="todo-text" id="main-td_11">분만 병원 최종 확정 (32주 전후)</div></div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_12')"><div class="chk" id="chk-td_12"></div><div class="todo-text" id="main-td_12">출산 가방 준비</div></div>
+    </div>
+    <div class="todo-group">
+      <div class="todo-group-title">🌸 출산 후</div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_13')"><div class="chk" id="chk-td_13"></div><div class="todo-text" id="main-td_13">출생신고 (1개월 이내)</div></div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_14')"><div class="chk" id="chk-td_14"></div><div class="todo-text" id="main-td_14">첫만남이용권 200만원 신청 (복지로)</div></div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_15')"><div class="chk" id="chk-td_15"></div><div class="todo-text" id="main-td_15">서울시 산후조리경비 100만원 신청 (서울맘케어)</div></div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_16')"><div class="chk" id="chk-td_16"></div><div class="todo-text" id="main-td_16">부모급여 신청 (월 100만원, 복지로)</div></div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_17')"><div class="chk" id="chk-td_17"></div><div class="todo-text" id="main-td_17">아동수당 신청 (월 10만원)</div></div>
+      <div class="todo-item" onclick="toggleCheck(this,'td_18')"><div class="chk" id="chk-td_18"></div><div class="todo-text" id="main-td_18">남편 배우자 출산휴가 신청 (90일 이내)</div></div>
+    </div>
+  </div>
+
+  <div style="height:40px"></div>
+</div>
+
+<script>
+const STORAGE_KEY = 'ruby_notebook_v1';
+const POLL_INTERVAL = 4000;
+let state = {};
+let lastSaved = null;
+
+function calcDday() {
+  const due = new Date('2025-11-23');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const diff = Math.ceil((due - today) / (1000*60*60*24));
+  document.getElementById('dday-count').textContent = diff > 0 ? diff : 0;
+}
+
+function goNotebook() {
+  document.getElementById('screen-main').classList.remove('active');
+  const nb = document.getElementById('screen-notebook');
+  nb.classList.add('active','slide-in');
+  setTimeout(()=>nb.classList.remove('slide-in'), 400);
+}
+
+function goMain() {
+  document.getElementById('screen-notebook').classList.remove('active');
+  const main = document.getElementById('screen-main');
+  main.classList.add('active','slide-back');
+  setTimeout(()=>main.classList.remove('slide-back'), 400);
+}
+
+function toggle(id) {
+  const body = document.getElementById('body-'+id);
+  const chev = document.getElementById('chev-'+id);
+  if (!body) return;
+  const open = body.classList.toggle('open');
+  if (chev) chev.style.transform = open ? 'rotate(90deg)' : '';
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function toggleCheck(row, key) {
+  const chk = document.getElementById('chk-'+key);
+  const main = document.getElementById('main-'+key);
+  const sub = document.getElementById('sub-'+key);
+  const now = !chk.classList.contains('checked');
+  chk.classList.toggle('checked', now);
+  if (main) main.classList.toggle('done', now);
+  if (sub) sub.classList.toggle('done', now);
+  state[key] = now;
+  saveState();
+}
+
+function setSyncStatus(type, msg) {
+  const dot = document.getElementById('syncDot');
+  const txt = document.getElementById('syncText');
+  if (!dot) return;
+  dot.className = 'sync-dot' + (type==='loading'?' loading':type==='error'?' error':'');
+  txt.textContent = msg;
+}
+
+function applyState() {
+  Object.keys(state).forEach(key => {
+    const chk = document.getElementById('chk-'+key);
+    const main = document.getElementById('main-'+key);
+    const sub = document.getElementById('sub-'+key);
+    if (!chk) return;
+    chk.classList.toggle('checked', !!state[key]);
+    if (main) main.classList.toggle('done', !!state[key]);
+    if (sub) sub.classList.toggle('done', !!state[key]);
+  });
+}
+
+async function apiCall(prompt, maxTokens) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: maxTokens || 1000,
+      system: 'You are a key-value store. GET: return ONLY the stored JSON or {}. SET: reply only "SAVED".',
+      messages: [{role:'user', content: prompt}]
+    })
+  });
+  const data = await res.json();
+  return data.content?.[0]?.text?.trim() || '{}';
+}
+
+async function loadState() {
+  try {
+    const text = await apiCall('GET '+STORAGE_KEY);
+    state = JSON.parse(text.replace(/```json|```/g,'').trim());
+  } catch(e) { state = {}; }
+}
+
+async function saveState() {
+  const json = JSON.stringify(state);
+  if (json === lastSaved) return;
+  setSyncStatus('loading','저장 중...');
+  try {
+    await apiCall('SET '+STORAGE_KEY+' '+json, 100);
+    lastSaved = json;
+    setSyncStatus('ok','동기화 완료');
+  } catch(e) {
+    setSyncStatus('error','저장 실패');
+  }
+}
+
+async function pollState() {
+  try {
+    const text = await apiCall('GET '+STORAGE_KEY);
+    let remote = {};
+    try { remote = JSON.parse(text.replace(/```json|```/g,'').trim()); } catch(e) {}
+    const remoteStr = JSON.stringify(remote);
+    if (remoteStr !== lastSaved) {
+      state = remote;
+      lastSaved = remoteStr;
+      applyState();
+      setSyncStatus('ok','상대방이 업데이트했어요 💎');
+      setTimeout(()=>setSyncStatus('ok','동기화 완료'), 3000);
+    }
+  } catch(e) {}
+}
+
+async function init() {
+  calcDday();
+  setSyncStatus('loading','연결 중...');
+  await loadState();
+  applyState();
+  lastSaved = JSON.stringify(state);
+  setSyncStatus('ok','동기화 완료');
+  document.getElementById('loading').classList.add('hidden');
+  setInterval(pollState, POLL_INTERVAL);
+}
+
+init();
+</script>
+</body>
+</html>
